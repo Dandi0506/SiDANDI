@@ -1,0 +1,237 @@
+/* =====================================================================
+   SiDANDI - style.css
+   Daftar isi:
+   1. Variabel warna (tema terang & gelap)
+   2. Reset & dasar halaman
+   3. Layout utama (sidebar + konten)
+   4. Komponen (kartu, tabel, tombol, form, badge, avatar, progres)
+   5. Utilitas layout (row, grid, kolom)
+   6. Kertas dokumen (pratinjau)
+   7. Timesheet
+   8. Dialog (form tambah pegawai)
+   9. Responsif (layar kecil)
+   10. Cetak (hanya halaman dokumen)
+   ===================================================================== */
+
+
+/* ---------- 1. VARIABEL WARNA ----------
+   Semua warna diambil dari variabel ini. Untuk ganti warna aplikasi,
+   cukup ubah nilai di sini (mis. --ac = warna aksen utama). */
+:root{
+  --bg:#F4F6F8;    /* latar halaman */
+  --sf:#fff;       /* latar kartu / input */
+  --bd:#E2E6EB;    /* garis tepi */
+  --ink:#14213D;   /* warna teks utama */
+  --mut:#5B6472;   /* teks sekunder */
+  --ac:#0E7C7B;    /* aksen (tombol utama, progres) */
+  --acx:#fff;      /* teks di atas aksen */
+  --acs:#E3F3F2;   /* aksen lembut (item terpilih) */
+  --side:#14213D;  /* latar sidebar */
+  --th:#F9FAFB;    /* latar header tabel */
+  --in:#CBD2DB;    /* garis tepi input */
+  box-sizing:border-box;
+  /* beri ruang aman untuk notch / bar sistem di HP */
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+
+/* Tema gelap otomatis mengikuti pengaturan perangkat.
+   Bisa dipaksa terang dengan <html data-theme="light"> */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1623;--sf:#182234;--bd:#2A3750;--ink:#E8ECF4;--mut:#9AA7BD;
+    --ac:#2BB3B0;--acx:#07201F;--acs:#12363A;--side:#0A101B;--th:#1C283D;--in:#3A4968;
+  }
+}
+/* Tema gelap paksa: <html data-theme="dark"> */
+:root[data-theme="dark"]{
+  --bg:#0F1623;--sf:#182234;--bd:#2A3750;--ink:#E8ECF4;--mut:#9AA7BD;
+  --ac:#2BB3B0;--acx:#07201F;--acs:#12363A;--side:#0A101B;--th:#1C283D;--in:#3A4968;
+}
+
+
+/* ---------- 2. RESET & DASAR ---------- */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+
+/* ---------- 3. LAYOUT UTAMA ---------- */
+.app{display:flex;min-height:100vh}   /* sidebar di kiri, konten di kanan */
+
+/* Sidebar */
+aside{
+  width:232px;flex:none;
+  background:var(--side);
+  padding:24px 16px;
+  display:flex;flex-direction:column;gap:28px;
+}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:18px;padding:0 6px}
+nav{display:flex;flex-direction:column;gap:4px}
+nav a{
+  display:flex;align-items:center;
+  min-height:44px;padding:0 14px;border-radius:8px;
+  color:#C9D1E0;text-decoration:none;font-weight:500;
+}
+nav a.on{background:#0E7C7B;color:#fff}   /* menu aktif (diatur oleh route() di app.js) */
+
+/* Area konten */
+main{flex:1;min-width:0;padding:32px 40px;display:flex;flex-direction:column;gap:20px}
+
+/* Setiap halaman (<section>) disembunyikan, kecuali yang diberi class "on" */
+section{display:none;flex-direction:column;gap:20px}
+section.on{display:flex}
+
+/* Judul halaman + tombol aksi di kanan */
+.head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+h1{margin:0;font-size:26px}
+.sub{color:var(--mut);margin-top:4px}
+
+
+/* ---------- 4. KOMPONEN ---------- */
+
+/* Kartu putih pembungkus tabel / form */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px}
+.scroll{overflow-x:auto}   /* tabel lebar bisa digeser di layar kecil */
+
+/* Tabel */
+table{border-collapse:collapse;width:100%}
+th{
+  font-size:12px;font-weight:600;color:var(--mut);text-align:left;
+  padding:12px 16px;background:var(--th);white-space:nowrap;
+}
+td{padding:12px 16px;border-top:1px solid var(--bd);white-space:nowrap}
+
+/* Tombol: .btn = utama, .btn.o = outline, .btn.on = terpilih (template/filter) */
+.btn{
+  min-height:44px;padding:0 18px;border-radius:8px;
+  border:1px solid var(--ac);background:var(--ac);color:var(--acx);
+  font:600 14px inherit;font-family:inherit;cursor:pointer;
+}
+.btn.o{background:transparent;color:var(--ink);border-color:var(--in)}
+.btn.on{background:var(--acs);border:2px solid var(--ac);color:var(--ink)}
+
+/* Input & select */
+input,select{
+  min-height:44px;width:100%;
+  border:1px solid var(--in);border-radius:8px;padding:0 12px;
+  font:inherit;background:var(--sf);color:var(--ink);
+}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+
+/* Badge status: .g hijau, .a kuning, .s abu, .b biru
+   (dipetakan ke status di objek `cls` pada app.js) */
+.bd{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.g{background:#DCFCE7;color:#166534}
+.a{background:#FEF3C7;color:#92400E}
+.s{background:#E8ECF1;color:#3B4656}
+.b{background:#DBEAFE;color:#1E40AF}
+
+/* Avatar inisial pegawai */
+.av{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--acs);color:var(--ac);
+  font-size:12px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-right:10px;vertical-align:middle;
+}
+
+/* Bar progres proyek: <span class="bar"><i style="width:72%"></i></span> */
+.bar{
+  height:8px;width:120px;border-radius:4px;background:var(--bd);
+  display:inline-block;vertical-align:middle;margin-right:8px;overflow:hidden;
+}
+.bar i{display:block;height:100%;background:var(--ac)}
+
+
+/* ---------- 5. UTILITAS LAYOUT ---------- */
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}          /* pilihan template */
+.cols{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}   /* form kiri + pratinjau kanan */
+.cols>*{flex:1;min-width:300px}
+.pad{padding:20px;display:flex;flex-direction:column;gap:14px}       /* isi kartu */
+
+
+/* ---------- 6. KERTAS DOKUMEN ----------
+   Elemen #paper diisi oleh renderDoc() di app.js.
+   white-space:pre-wrap menjaga baris baru (\n) dari template. */
+.paper{
+  background:#fff;color:#222;                 /* selalu putih, walau tema gelap */
+  border:1px solid #CBD2DB;padding:36px 40px;
+  font:13px/1.7 Georgia,serif;
+  min-height:440px;white-space:pre-wrap;
+}
+.paper h2{font-size:15px;text-align:center;margin:0}
+
+
+/* ---------- 7. TIMESHEET ---------- */
+.ts input{width:64px;text-align:center}   /* kolom input jam per hari */
+
+
+/* ---------- 8. DIALOG TAMBAH PEGAWAI ---------- */
+dialog{
+  border:1px solid var(--bd);border-radius:12px;
+  background:var(--sf);color:var(--ink);
+  padding:24px;width:min(420px,92vw);
+}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog form{display:flex;flex-direction:column;gap:14px}
+
+
+/* ---------- 9. RESPONSIF (layar <= 800px) ----------
+   Sidebar berubah jadi menu horizontal di atas. */
+@media (max-width:800px){
+  .app{flex-direction:column}
+  aside{width:auto;padding:12px 16px;gap:12px}
+  nav{flex-direction:row;overflow-x:auto}
+  nav a{white-space:nowrap}
+  main{padding:20px 16px}
+}
+
+
+/* ---------- 10. CETAK: HANYA HALAMAN DOKUMEN ----------
+   Dipakai saat tombol "Cetak / Simpan PDF" (window.print() di app.js)
+   diklik. Semua yang bukan dokumen disembunyikan dengan display:none
+   supaya tidak ada halaman kosong tersisa.
+   Untuk ubah ukuran kertas / margin, edit @page di bawah. */
+@page{size:A4;margin:20mm}
+
+@media print{
+  body{background:#fff}
+
+  /* Sembunyikan sidebar, judul halaman, elemen .noprint,
+     dan form pengisian (kolom kiri) */
+  aside,
+  .head,
+  .noprint,
+  .cols>div:first-child{display:none!important}
+
+  /* Sembunyikan semua halaman selain Generate Dokumen */
+  section:not(#dokumen){display:none!important}
+
+  /* Hilangkan bingkai & padding pembungkus agar dokumen memenuhi kertas */
+  .app,main,.cols{display:block;padding:0;min-height:0}
+  .card{border:0;background:none}
+  .pad{padding:0}
+
+  /* Gaya dokumen saat tercetak */
+  .paper{border:0;padding:0;min-height:0;font-size:12pt}
+}
+
+/* ---------- 11. PRATINJAU DOCX (IFRAME) ---------- */
+/* Beri ruang pratinjau kanan sedikit lebih lebar dari form kiri */
+#dokumen .cols > div:first-child { flex: 1; max-width: 440px; }
+#dokumen .cols > div:last-child  { flex: 1.4; }
+
+@media print {
+  /* Pastikan saat Ctrl+P dari browser, iframe pratinjau ikut tercetak penuh */
+  #paper {
+    border: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+}
